@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "662546237330",
+    "project_id": "traintime-4f9df",
+    "storage_bucket": "traintime-4f9df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662546237330:android:40b5610e27e7eab5ca234b",
+        "android_client_info": {
+          "package_name": "com.example.train_time_table"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662546237330-7q7h8fdtjstbbeue1n6prn1m791he6qq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpEjxrBp32y2idgH1kA1BHX7U4Td6lFUA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662546237330-7q7h8fdtjstbbeue1n6prn1m791he6qq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
