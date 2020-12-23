@@ -1,10 +1,14 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:train_time_table/TrainList.dart';
 
 class Home1 extends StatelessWidget {
   final myController = TextEditingController();
   String refno= "";
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
      
       body: SingleChildScrollView(
@@ -38,7 +42,16 @@ class Home1 extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(top: 10.0),
                   child: RaisedButton.icon(
-                    onPressed: (){pop();
+                    onPressed: (){
+                      pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context)=>
+                          TrainList(data:myController.text),
+
+                        )
+                      );
+
 
                     },
                     shape: RoundedRectangleBorder(
@@ -58,6 +71,8 @@ class Home1 extends StatelessWidget {
         ),
       ),
     );
+
+
   }
   void pop(){
     if(myController.text.length==0) {
@@ -69,5 +84,7 @@ class Home1 extends StatelessWidget {
       refno = myController.text;
 
   }
+
+
 }
 

@@ -5,13 +5,26 @@ import 'package:train_time_table/TrainDetails.dart';
 import 'package:http/http.dart' as http;
 
 class TrainList extends StatefulWidget {
+  String data;
+
+  TrainList({
+    Key key,
+    @required this.data}) : super(key: key);
+
+
   @override
-  _TrainListState createState() => _TrainListState();
+  _TrainListState createState() => _TrainListState(this.data);
 }
 
 class _TrainListState extends State<TrainList> {
-
+// String d= widget.data;
   List<TrainDetails> _traindetails = List<TrainDetails>();
+    String data;
+  _TrainListState(this.data);
+
+
+
+
   Future fetchNotes() async{
     var url = 'http://192.168.1.100:8080/demo/shedules?refno=1105';
     var response = await http.get(url);
@@ -38,6 +51,7 @@ class _TrainListState extends State<TrainList> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Flutter listview with json'),
@@ -47,7 +61,7 @@ class _TrainListState extends State<TrainList> {
           child: Column(
 
             children: [
-              Text("details",
+              Text( data,
 
                 style: TextStyle(
                     fontSize: 20, fontWeight: FontWeight.bold
