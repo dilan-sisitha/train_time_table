@@ -3,11 +3,28 @@
 import 'package:flutter/material.dart';
 import 'package:train_time_table/TrainList.dart';
 
+
+
 class Home1 extends StatelessWidget {
   final myController = TextEditingController();
   String refno= "";
   @override
   Widget build(BuildContext context) {
+
+   nav(){
+
+     if(myController.text.length!=0) {
+       Navigator.of(context).push(
+           MaterialPageRoute(
+             builder: (context) =>
+                 TrainList(data: myController.text),
+
+           )
+       );
+     }
+     else
+       debugPrint("enter text");
+    }
 
     return Scaffold(
      
@@ -36,6 +53,11 @@ class Home1 extends StatelessWidget {
                     ),
                     controller: myController,
 
+                    textInputAction: TextInputAction.search,
+                    onFieldSubmitted: (value){
+                      nav();
+                    },
+
 
                   ),
                 ),
@@ -44,13 +66,8 @@ class Home1 extends StatelessWidget {
                   child: RaisedButton.icon(
                     onPressed: (){
                       pop();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context)=>
-                          TrainList(data:myController.text),
+                      nav();
 
-                        )
-                      );
 
 
                     },
@@ -80,7 +97,7 @@ class Home1 extends StatelessWidget {
 
     }
     else
-      debugPrint(myController.text+"okay");
+      debugPrint("okay");
       refno = myController.text;
 
   }
