@@ -24,6 +24,7 @@ dependencies:
   firebase_core: "^0.5.3"
   cloud_firestore: "^0.14.4"
   connection_verify: "^1.0.4"
+  http: "^0.12.2"
   flutter:
     sdk: flutter
 
@@ -33,6 +34,8 @@ dependencies:
   cupertino_icons: ^0.1.3
 
 dev_dependencies:
+  connection_verify: "^1.0.4"
+  http: "^0.12.2"
   flutter_test:
     sdk: flutter
 

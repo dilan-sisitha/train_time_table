@@ -30,6 +30,7 @@ class DataSearch extends SearchDelegate<String>{
   String selectedResult ="";
   @override
   Widget buildResults(BuildContext context) {
+    debugPrint("select");
     return Container(
       child: Column(
         children: [
