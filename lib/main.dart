@@ -11,7 +11,7 @@ void main()  {
   runApp(new MaterialApp(
     debugShowCheckedModeBanner: false,
 
-    home: Home1(),
+    home: Home(),
   ));
 }
 

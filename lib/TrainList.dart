@@ -17,7 +17,10 @@ class TrainList extends StatefulWidget {
 }
 
 class _TrainListState extends State<TrainList> {
-// String d= widget.data;
+
+
+
+
   List<TrainDetails> _traindetails = List<TrainDetails>();
     String data;
   _TrainListState(this.data);
@@ -25,7 +28,7 @@ class _TrainListState extends State<TrainList> {
 
 
 
-  Future fetchNotes() async{
+  Future fetchTrainDetails() async{
     var url = 'http://192.168.1.100:8080/demo/shedules?refno=1105';
     var response = await http.get(url);
 
@@ -39,13 +42,15 @@ class _TrainListState extends State<TrainList> {
     }
     return traindetails;
   }
+
   @override
   void initState() {
-    fetchNotes().then((value) {
+    fetchTrainDetails().then((value) {
       setState(() {
         _traindetails.addAll(value);
       });
     });
+
     super.initState();
   }
 
