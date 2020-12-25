@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:train_time_table/FormDetails.dart';
 import 'package:train_time_table/TrainDetails.dart';
 import 'package:http/http.dart' as http;
+import 'IpAdress.dart';
 
 class TrainList extends StatefulWidget {
+
+  //geting refno from navigation
   String data;
 
   TrainList({
@@ -18,50 +22,88 @@ class TrainList extends StatefulWidget {
 
 class _TrainListState extends State<TrainList> {
 
-
+  //geting passed refno from navigatio to state class
+  String data;
+  _TrainListState(this.data);
 
 
   List<TrainDetails> _traindetails = List<TrainDetails>();
-    String data;
-  _TrainListState(this.data);
 
+
+  List<FormDetails> _formdetails = List<FormDetails>();
+
+  bool isSheduleLoading = true;
+  bool isDetailsLoading = true;
 
 
 
   Future fetchTrainDetails() async{
-    var url = 'http://192.168.1.100:8080/demo/shedules?refno=1105';
+    var url = IpAdress.ip+'demo/shedules?refno='+data;
     var response = await http.get(url);
 
     var traindetails = List<TrainDetails>();
 
     if (response.statusCode == 200) {
-      var notesJson = json.decode(response.body);
-      for (var noteJson in notesJson) {
-        traindetails.add(TrainDetails.fromJson(noteJson));
+      var trainsJson = json.decode(response.body);
+      for (var trainJson in trainsJson) {
+        traindetails.add(TrainDetails.fromJson(trainJson));
       }
     }
     return traindetails;
   }
 
+
+
+  Future fetchFormDetails()async{
+    var url = IpAdress.ip+"demo/details?refno=1005";
+    var response = await http.get(url);
+
+    var formdetails = List<FormDetails>();
+    if(response.statusCode ==200){
+     var formsJson = json.decode(response.body);
+     for(var form in formsJson){
+       formdetails.add(FormDetails.fromJason(form));
+     }
+
+    }
+    return formdetails;
+
+  }
+
   @override
   void initState() {
+
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
     fetchTrainDetails().then((value) {
       setState(() {
         _traindetails.addAll(value);
+        isSheduleLoading =false;
+      });
+    });
+    });
+
+
+    fetchFormDetails().then((value) {
+      setState(() {
+        _formdetails.addAll(value);
+        isDetailsLoading = false;
       });
     });
 
-    super.initState();
+
   }
 
   @override
   Widget build(BuildContext context) {
 
+
     return Scaffold(
         appBar: AppBar(
-          title: Text('Flutter listview with json'),
+          title: Text('Train Time Table'),
         ),
-        body: Container(
+        body: isSheduleLoading&&isDetailsLoading ?Center(child: CircularProgressIndicator(),): Container(
           padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
           child: Column(
 
@@ -80,7 +122,7 @@ class _TrainListState extends State<TrainList> {
 
                   alignment:Alignment.topLeft ,
 
-                  child: Text("form no",
+                  child: _formdetails[0].form_no==null? Container():Text("form no = "+_formdetails[0].form_no.toString(),
                     style: TextStyle(
                         fontSize: 20
 

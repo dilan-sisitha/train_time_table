@@ -10,7 +10,7 @@ void main()  {
 
   runApp(new MaterialApp(
     debugShowCheckedModeBanner: false,
-
+    title: 'Train Time',
     home: Home(),
   ));
 }

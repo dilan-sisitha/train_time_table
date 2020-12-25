@@ -1,5 +1,6 @@
 import 'package:connection_verify/connection_verify.dart';
 import 'package:flutter/material.dart';
+import 'package:train_time_table/IpAdress.dart';
 import 'package:train_time_table/TrainList.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,8 +20,7 @@ class _HomeState extends State<Home> {
   //fetch refno validity status
   Future fetchValidity() async {
     var rest;
-    var url =
-        'http://192.168.1.100:8080/demo/checkrefno?refno=' + myController.text;
+    var url = IpAdress.ip+'demo/checkrefno?refno=' + myController.text;
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -108,6 +108,7 @@ class _HomeState extends State<Home> {
     if (altert_status) {
       _showMyDialog();
     } else {
+      await Future.delayed(Duration(seconds: 1));
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => TrainList(data: myController.text),
       ));
