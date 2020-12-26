@@ -34,6 +34,7 @@ class _TrainListState extends State<TrainList> {
 
   bool isSheduleLoading = true;
   bool isDetailsLoading = true;
+  bool isFetchingError = false;
 
 
 
@@ -44,28 +45,34 @@ class _TrainListState extends State<TrainList> {
     var traindetails = List<TrainDetails>();
 
     if (response.statusCode == 200) {
+      isFetchingError = false;
       var trainsJson = json.decode(response.body);
       for (var trainJson in trainsJson) {
         traindetails.add(TrainDetails.fromJson(trainJson));
       }
     }
+    else
+      isFetchingError =true;
     return traindetails;
   }
 
 
 
   Future fetchFormDetails()async{
-    var url = IpAdress.ip+"demo/details?refno=1005";
+    var url = IpAdress.ip+"demo/details?refno="+data;
     var response = await http.get(url);
 
     var formdetails = List<FormDetails>();
     if(response.statusCode ==200){
+
+      isFetchingError =false;
      var formsJson = json.decode(response.body);
      for(var form in formsJson){
        formdetails.add(FormDetails.fromJason(form));
      }
 
-    }
+    }else
+      isFetchingError = true;
     return formdetails;
 
   }
@@ -104,69 +111,154 @@ class _TrainListState extends State<TrainList> {
           title: Text('Train Time Table'),
         ),
         body: isSheduleLoading&&isDetailsLoading ?Center(child: CircularProgressIndicator(),): Container(
-          padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+
           child: Column(
 
             children: [
-              Text( data,
+              
+              
+              Card(
 
-                style: TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.bold
-                ),
-                textAlign: TextAlign.center,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: Column(
+                    children: [
+                      Text( _formdetails[0].details.toString(),
 
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 0, bottom: 0, left: 20.0, right: 0),
-                child: Align(
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold
+                        ),
+                        textAlign: TextAlign.center,
 
-                  alignment:Alignment.topLeft ,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 0, left: 35.0, right: 0),
+                        child: Align(
 
-                  child: _formdetails[0].form_no==null? Container():Text("form no = "+_formdetails[0].form_no.toString(),
-                    style: TextStyle(
-                        fontSize: 20
+                          alignment:Alignment.topLeft ,
 
-                    ),
-                    textAlign: TextAlign.start,
+                          child:Text(
+                               _formdetails[0].form_no==null?"form number not available":
+                            "Form No. "+_formdetails[0].form_no.toString(),
+                            style: TextStyle(
+                                fontSize: 15,
+                              color: Colors.black54
+
+
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ),
+                      _formdetails[0].pt==null? Container( padding: const EdgeInsets.only(top: 10, bottom: 20, left: 35.0, right: 0),):
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 20, left: 30.0, right: 0),
+                        child: Align(
+                          alignment:Alignment.topLeft ,
+                          child: Text("P.T "+_formdetails[0].pt,
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black54
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(top: 0, bottom: 0, left: 20.0, right: 0),
-                child: Align(
-                  alignment:Alignment.topLeft ,
-                  child: Text("pt",
-                    style: TextStyle(
-                        fontSize: 20
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-              ),
+
+
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) {
                     return Card(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
+                        padding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 16.0, right: 16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start ,
                           children: <Widget>[
-                            Text(
-                              _traindetails[index].arrival,
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold
+                            Center(
+                              child: Text(
+
+                                _traindetails[index].station==null? " ":
+                                _traindetails[index].station,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  color: Colors.black.withOpacity(0.7)
+
+                                ),
                               ),
                             ),
-                            Text(
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 25.0, bottom: 10, left: 16.0, right: 16.0),
+                                  child: Row(
 
-                              _traindetails[index].departure,
-                              style: TextStyle(
-                                  color: Colors.grey.shade600
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _traindetails[index].arrival==null|| _traindetails[index].arrival==""? Container():
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 0.0, bottom: 0, left: 15.0, right: 0.0),
+                                        child: Text(
+                                          _traindetails[index].arrival==null? "":
+                                         "A. "+ _traindetails[index].arrival,
+                                          style: TextStyle(
+                                              color: Colors.green[500],
+                                              fontSize:20,
+                                              fontWeight: FontWeight.w500
+
+                                          ),
+                                        ),
+                                      ),
+                                      _traindetails[index].departure==null|| _traindetails[index].departure==""? Container():
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 0.0, bottom: 0, left: 25.0, right: 0.0),
+                                        child: Text(
+
+                                          "D. "+_traindetails[index].departure,
+                                          style: TextStyle(
+                                              color: Colors.deepOrangeAccent,
+                                              fontSize:20,
+                                              fontWeight: FontWeight.w500
+                                          ),
+                                        ),
+                                      ),
+                                      _traindetails[index].crossing==null? Container():
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 0.0, bottom: 0, left: 0, right: 0.0),
+                                        child: Text(
+                                          _traindetails[index].crossing==null? " ":
+                                          " "+_traindetails[index].crossing,
+                                          style: TextStyle(
+                                              color: Color.fromRGBO(0, 0, 204, 10.0),
+                                              fontSize:20,
+                                              fontWeight: FontWeight.w500
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            _traindetails[index].park==null|| _traindetails[index].park==""? Container():Padding(
+                              padding: EdgeInsets.only(top: 0.0, bottom: 0, left: 25.0, right: 0.0),
+                              child: Text(
+                               _traindetails[index].park==null|| _traindetails[index].park==""? " ":
+                                "P. "+_traindetails[index].park,
+                                style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontSize:20,
+                                    fontWeight: FontWeight.w500
+                                ),
                               ),
                             ),
                           ],
+
                         ),
                       ),
                     );

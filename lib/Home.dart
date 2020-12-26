@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connection_verify/connection_verify.dart';
 import 'package:flutter/material.dart';
 import 'package:train_time_table/IpAdress.dart';
@@ -17,56 +19,71 @@ class _HomeState extends State<Home> {
   String altert_text = "";
   bool altert_status = false;
 
+
   //fetch refno validity status
   Future fetchValidity() async {
     var rest;
-    var url = IpAdress.ip+'demo/checkrefno?refno=' + myController.text;
-    var response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      rest = response.body;
-    }
-    return rest;
-  }
-
-//check conncetion and whether text field is empty
-  Future<void> check() async {
-    if (await ConnectionVerify.connectionStatus()) {
-      //if you have internet cnncetion
-      print("I have network connection!");
-
-      if (myController.text.length == 0) {
-        //if textfield is empty
-        altert_text = "please enter reference number";
-        altert_status = true;
 
 
-      } else {
-        //if internet connection is ok and text field is not empty
+    if (myController.text.length == 0) {
+      //if textfield is empty
+      print("text field is empty");
+      altert_text = "please enter reference number";
+      altert_status = true;
 
-        //check if refernce number is valid
-        var result = await fetchValidity();
-        refno_validity = int.parse(result);
+    }else{
+      //if text is not empty
+      print("text is not empty");
 
-        //if ref num is correct
-        if (refno_validity == 1) {
-          altert_status = false;
+      if (await ConnectionVerify.connectionStatus()){
+        //if i have internet
+        print("you have internet");
+        try{
+          var url = IpAdress.ip+'demo/checkrefno?refno=' + myController.text;
+          var response = await http.get(url);
 
-          //if ref num is wrong
-        } else if (refno_validity == 0) {
+          if (response.statusCode == 200) {
+            rest = response.body;
+            refno_validity = int.parse(rest);
+            if (refno_validity == 1) {
+              altert_status = false;
+
+              //if ref num is wrong
+            } else if (refno_validity == 0) {
+              altert_status = true;
+              altert_text = "please enter a valid reference number\n eg: 1153";
+            }else {
+              altert_status = true;
+              altert_text = "conncection error";
+            }
+          }else{
+            altert_status = true;
+            altert_text = "conncection error";
+
+          }
+
+
+        }on SocketException{
+          print("conncetion error");
+          altert_text = "connection error!";
           altert_status = true;
-          altert_text = "please enter a valid reference number\n eg: 1005";
         }
 
+      }else{
+        //if no internet
+        altert_text = "please check your internet connection";
+        altert_status = true;
 
       }
-    } else {
-      //if no internet
-      altert_text = "please check your internet connection";
-      altert_status = true;
-      print("I don't have network connection!");
+
+
     }
+
+
+
   }
+
+
 
   //alert dialog method
   Future<void> _showMyDialog() async {
@@ -104,11 +121,11 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> nav() async {
-    await check();
+    await fetchValidity();
     if (altert_status) {
       _showMyDialog();
     } else {
-      await Future.delayed(Duration(seconds: 1));
+   //   await Future.delayed(Duration(seconds: 1));
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => TrainList(data: myController.text),
       ));
