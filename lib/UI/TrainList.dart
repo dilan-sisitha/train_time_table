@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:train_time_table/FormDetails.dart';
 import 'package:train_time_table/TrainDetails.dart';
 import 'package:http/http.dart' as http;
-import 'IpAdress.dart';
+import '../Network/IpAdress.dart';
 
 class TrainList extends StatefulWidget {
 
@@ -80,7 +80,7 @@ class _TrainListState extends State<TrainList> {
   @override
   void initState() {
 
-    super.initState();
+
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
     fetchTrainDetails().then((value) {
@@ -99,6 +99,7 @@ class _TrainListState extends State<TrainList> {
       });
     });
 
+    super.initState();
 
   }
 
@@ -138,7 +139,7 @@ class _TrainListState extends State<TrainList> {
                           alignment:Alignment.topLeft ,
 
                           child:Text(
-                               _formdetails[0].form_no==null?"form number not available":
+                               _formdetails[0].form_no==null|| _formdetails[0].form_no==""?"Form number not available":
                             "Form No. "+_formdetails[0].form_no.toString(),
                             style: TextStyle(
                                 fontSize: 15,
@@ -150,12 +151,27 @@ class _TrainListState extends State<TrainList> {
                           ),
                         ),
                       ),
-                      _formdetails[0].pt==null? Container( padding: const EdgeInsets.only(top: 10, bottom: 20, left: 35.0, right: 0),):
+                      _formdetails[0].pt==null|| _formdetails[0].pt==""? Container( padding: const EdgeInsets.only(top: 10, left: 35.0, right: 0),):
                       Container(
                         padding: const EdgeInsets.only(top: 10, bottom: 20, left: 30.0, right: 0),
                         child: Align(
                           alignment:Alignment.topLeft ,
                           child: Text("P.T "+_formdetails[0].pt,
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black54
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      ),
+
+                    _formdetails[0].info==null|| _formdetails[0].info==""? Container( padding: const EdgeInsets.only(top: 10, bottom: 20, left: 35.0, right: 0),):
+                      Container(
+                        padding: const EdgeInsets.only(top: 10, bottom: 20, left: 30.0, right: 10),
+                        child: Align(
+                          alignment:Alignment.topLeft ,
+                          child: Text(_formdetails[0].info,
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.black54
@@ -182,7 +198,7 @@ class _TrainListState extends State<TrainList> {
                             Center(
                               child: Text(
 
-                                _traindetails[index].station==null? " ":
+                                _traindetails[index].station==null||_traindetails[index].station==""?  " ":
                                 _traindetails[index].station,
                                 style: TextStyle(
                                     fontSize: 18,
@@ -204,7 +220,7 @@ class _TrainListState extends State<TrainList> {
                                       Padding(
                                         padding: EdgeInsets.only(top: 0.0, bottom: 0, left: 15.0, right: 0.0),
                                         child: Text(
-                                          _traindetails[index].arrival==null? "":
+                                          _traindetails[index].arrival==null||_traindetails[index].arrival==""? "":
                                          "A. "+ _traindetails[index].arrival,
                                           style: TextStyle(
                                               color: Colors.green[500],
@@ -227,7 +243,7 @@ class _TrainListState extends State<TrainList> {
                                           ),
                                         ),
                                       ),
-                                      _traindetails[index].crossing==null? Container():
+                                      _traindetails[index].crossing==null|| _traindetails[index].crossing==""? Container():
                                       Padding(
                                         padding: const EdgeInsets.only(top: 0.0, bottom: 0, left: 0, right: 0.0),
                                         child: Text(

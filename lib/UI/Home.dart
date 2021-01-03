@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:connection_verify/connection_verify.dart';
 import 'package:flutter/material.dart';
-import 'package:train_time_table/IpAdress.dart';
-import 'package:train_time_table/TrainList.dart';
+import 'file:///C:/Users/Dilan/Documents/train_time_table/lib/Network/IpAdress.dart';
+import 'file:///C:/Users/Dilan/Documents/train_time_table/lib/UI/TrainList.dart';
 import 'package:http/http.dart' as http;
+
+import 'Components/AltertBox.dart';
 
 class Home extends StatefulWidget {
   String refno = "";
@@ -14,6 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
   int refno_validity;
   final myController = TextEditingController();
   String altert_text = "";
@@ -39,7 +42,7 @@ class _HomeState extends State<Home> {
         //if i have internet
         print("you have internet");
         try{
-          var url = IpAdress.ip+'demo/checkrefno?refno=' + myController.text;
+          var url = IpAdress.ip+'demo/checkrefno?refno=' + myController.text.toString();
           var response = await http.get(url);
 
           if (response.statusCode == 200) {
@@ -56,6 +59,8 @@ class _HomeState extends State<Home> {
               altert_status = true;
               altert_text = "conncection error";
             }
+
+            //if responce coede is not 200
           }else{
             altert_status = true;
             altert_text = "conncection error";
@@ -63,7 +68,7 @@ class _HomeState extends State<Home> {
           }
 
 
-        }on SocketException{
+        }on Exception{
           print("conncetion error");
           altert_text = "connection error!";
           altert_status = true;
@@ -85,45 +90,13 @@ class _HomeState extends State<Home> {
 
 
 
-  //alert dialog method
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      altert_text,
-                      textAlign: TextAlign.center,
-                    )),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                'ok',
-                style: TextStyle(fontSize: 15),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 
   Future<void> nav() async {
     await fetchValidity();
     if (altert_status) {
-      _showMyDialog();
+      AltertBox altertBox = new AltertBox(context,altert_text);
+      altertBox.showMyDialog();
     } else {
    //   await Future.delayed(Duration(seconds: 1));
       Navigator.of(context).push(MaterialPageRoute(
@@ -131,6 +104,15 @@ class _HomeState extends State<Home> {
       ));
       debugPrint("validity is " + refno_validity.toString());
     }
+  }
+
+
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
   }
 
   @override
