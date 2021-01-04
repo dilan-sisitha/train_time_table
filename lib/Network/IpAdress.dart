@@ -1,3 +1,3 @@
 class IpAdress{
-  static final String ip = "http://springbootawsmysql-env.eba-zuitdxp4.us-east-2.elasticbeanstalk.com//";
+  static final String ip = "ip adress here";//removed due to security reasons
 }
